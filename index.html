@@ -1,21 +1,195 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Market Timing Lab</title>
-</head>
-<body>
-  <h2>Market Timing Lab</h2>
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+from enum import Enum
+from dataclasses import dataclass
+from typing import List, Dict
+import requests
+import uuid
+import time
 
-  <p>
-    Entorno de pruebas privadas enfocado en el análisis del
-    <strong>timing y contexto de mercado</strong>.
-  </p>
+# ============================================================
+# APP
+# ============================================================
 
-  <p>
-    Esta herramienta no ejecuta operaciones ni ofrece señales.
-    Su objetivo es evaluar estados de mercado como apoyo
-    a la toma de decisiones.
-  </p>
-</body>
-</html>
+app = FastAPI(title="Timing Engine Tester")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ============================================================
+# SIMPLE INVITE STORE (IN-MEMORY)
+# ============================================================
+
+INVITES = {}     # token -> created_at
+TESTERS = {}     # token -> tester info
+
+INVITE_EXPIRATION = 24 * 60 * 60  # 24h
+
+def create_invite():
+    token = str(uuid.uuid4())
+    INVITES[token] = time.time()
+    return token
+
+def is_valid_invite(token: str):
+    created = INVITES.get(token)
+    if not created:
+        return False
+    return (time.time() - created) < INVITE_EXPIRATION
+
+# ============================================================
+# MARKET STATES
+# ============================================================
+
+class MarketState(Enum):
+    INACTIVE = "Inactivo"
+    BUILDING = "Construyendo"
+    ACTIVE = "Activo"
+    EXTENDED = "Extendido"
+    EXHAUSTED = "Agotado"
+
+@dataclass
+class Candle:
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: float
+    timestamp: int
+
+# ============================================================
+# TIMING ENGINE
+# ============================================================
+
+class TimingEngine:
+    def evaluate(self, candles: List[Candle]) -> MarketState:
+        if len(candles) < 20:
+            return MarketState.INACTIVE
+
+        ranges = [c.high - c.low for c in candles]
+        avg_range = sum(ranges) / len(ranges)
+        recent_avg = sum(ranges[-5:]) / 5 if avg_range else 0
+        accel = recent_avg / avg_range if avg_range else 0
+
+        if accel >= 1.6:
+            return MarketState.ACTIVE
+        if accel >= 1.2:
+            return MarketState.BUILDING
+        if accel <= 0.6:
+            return MarketState.EXHAUSTED
+        if accel <= 0.9:
+            return MarketState.EXTENDED
+        return MarketState.BUILDING
+
+engine = TimingEngine()
+
+# ============================================================
+# DATA (BINANCE SOLO PARA TEST)
+# ============================================================
+
+def get_binance(symbol, interval="5m", limit=50):
+    url = "https://api.binance.com/api/v3/klines"
+    r = requests.get(url, params={
+        "symbol": symbol,
+        "interval": interval,
+        "limit": limit
+    }, timeout=10).json()
+
+    return [
+        Candle(float(k[1]), float(k[2]), float(k[3]), float(k[4]), float(k[5]), int(k[0]))
+        for k in r
+    ] if isinstance(r, list) else []
+
+# ============================================================
+# CHECKLIST DECISION
+# ============================================================
+
+def checklist_decision(state: MarketState, structure_ok: bool, risk_ok: bool):
+    timing_ok = state in {MarketState.ACTIVE, MarketState.BUILDING}
+    return {
+        "timing": state.value,
+        "timing_ok": timing_ok,
+        "structure_ok": structure_ok,
+        "risk_ok": risk_ok,
+        "trade_allowed": timing_ok and structure_ok and risk_ok
+    }
+
+# ============================================================
+# ROUTES
+# ============================================================
+
+@app.get("/create-invite")
+def create_invite_link():
+    token = create_invite()
+    return {"invite_link": f"/invite/{token}"}
+
+@app.get("/invite/{token}", response_class=HTMLResponse)
+def invite_page(token: str):
+    if not is_valid_invite(token):
+        raise HTTPException(403, "Invite inválido o expirado")
+
+    return f"""
+    <html>
+    <body>
+        <h2>Timing Engine – Tester</h2>
+        <form method="post" action="/test/{token}">
+            Nombre / Alias:<br>
+            <input name="name"/><br><br>
+
+            Symbol:<br>
+            <input name="symbol" value="BTCUSDT"/><br><br>
+
+            Timeframe:<br>
+            <input name="timeframe" value="5m"/><br><br>
+
+            Estructura OK:
+            <input type="checkbox" name="structure_ok"/><br>
+
+            Riesgo OK:
+            <input type="checkbox" name="risk_ok"/><br><br>
+
+            <button type="submit">Probar</button>
+        </form>
+    </body>
+    </html>
+    """
+
+@app.post("/test/{token}", response_class=HTMLResponse)
+async def run_test(token: str, request: Request):
+    if not is_valid_invite(token):
+        raise HTTPException(403, "Invite inválido")
+
+    form = await request.form()
+    name = form.get("name", "tester")
+    symbol = form.get("symbol")
+    timeframe = form.get("timeframe")
+    structure_ok = "structure_ok" in form
+    risk_ok = "risk_ok" in form
+
+    candles = get_binance(symbol, timeframe)
+    state = engine.evaluate(candles)
+    decision = checklist_decision(state, structure_ok, risk_ok)
+
+    TESTERS.setdefault(token, []).append({
+        "name": name,
+        "symbol": symbol,
+        "decision": decision
+    })
+
+    return f"""
+    <html>
+    <body>
+        <h3>Resultado</h3>
+        <pre>{decision}</pre>
+        <a href="/invite/{token}">Volver</a>
+    </body>
+    </html>
+    """
+
+@app.get("/testers")
+def list_testers():
+    return TESTERS
