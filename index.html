@@ -1,195 +1,221 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from enum import Enum
-from dataclasses import dataclass
-from typing import List, Dict
-import requests
-import uuid
-import time
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Market Timing Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-# ============================================================
-# APP
-# ============================================================
-
-app = FastAPI(title="Timing Engine Tester")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ============================================================
-# SIMPLE INVITE STORE (IN-MEMORY)
-# ============================================================
-
-INVITES = {}     # token -> created_at
-TESTERS = {}     # token -> tester info
-
-INVITE_EXPIRATION = 24 * 60 * 60  # 24h
-
-def create_invite():
-    token = str(uuid.uuid4())
-    INVITES[token] = time.time()
-    return token
-
-def is_valid_invite(token: str):
-    created = INVITES.get(token)
-    if not created:
-        return False
-    return (time.time() - created) < INVITE_EXPIRATION
-
-# ============================================================
-# MARKET STATES
-# ============================================================
-
-class MarketState(Enum):
-    INACTIVE = "Inactivo"
-    BUILDING = "Construyendo"
-    ACTIVE = "Activo"
-    EXTENDED = "Extendido"
-    EXHAUSTED = "Agotado"
-
-@dataclass
-class Candle:
-    open: float
-    high: float
-    low: float
-    close: float
-    volume: float
-    timestamp: int
-
-# ============================================================
-# TIMING ENGINE
-# ============================================================
-
-class TimingEngine:
-    def evaluate(self, candles: List[Candle]) -> MarketState:
-        if len(candles) < 20:
-            return MarketState.INACTIVE
-
-        ranges = [c.high - c.low for c in candles]
-        avg_range = sum(ranges) / len(ranges)
-        recent_avg = sum(ranges[-5:]) / 5 if avg_range else 0
-        accel = recent_avg / avg_range if avg_range else 0
-
-        if accel >= 1.6:
-            return MarketState.ACTIVE
-        if accel >= 1.2:
-            return MarketState.BUILDING
-        if accel <= 0.6:
-            return MarketState.EXHAUSTED
-        if accel <= 0.9:
-            return MarketState.EXTENDED
-        return MarketState.BUILDING
-
-engine = TimingEngine()
-
-# ============================================================
-# DATA (BINANCE SOLO PARA TEST)
-# ============================================================
-
-def get_binance(symbol, interval="5m", limit=50):
-    url = "https://api.binance.com/api/v3/klines"
-    r = requests.get(url, params={
-        "symbol": symbol,
-        "interval": interval,
-        "limit": limit
-    }, timeout=10).json()
-
-    return [
-        Candle(float(k[1]), float(k[2]), float(k[3]), float(k[4]), float(k[5]), int(k[0]))
-        for k in r
-    ] if isinstance(r, list) else []
-
-# ============================================================
-# CHECKLIST DECISION
-# ============================================================
-
-def checklist_decision(state: MarketState, structure_ok: bool, risk_ok: bool):
-    timing_ok = state in {MarketState.ACTIVE, MarketState.BUILDING}
-    return {
-        "timing": state.value,
-        "timing_ok": timing_ok,
-        "structure_ok": structure_ok,
-        "risk_ok": risk_ok,
-        "trade_allowed": timing_ok and structure_ok and risk_ok
+  <style>
+    :root {
+      --wine-dark: #3b0f1e;
+      --wine: #4b1f2a;
+      --text-main: #e6e6e6;
+      --text-soft: #c9c9c9;
     }
 
-# ============================================================
-# ROUTES
-# ============================================================
+    * {
+      box-sizing: border-box;
+    }
 
-@app.get("/create-invite")
-def create_invite_link():
-    token = create_invite()
-    return {"invite_link": f"/invite/{token}"}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--wine-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
 
-@app.get("/invite/{token}", response_class=HTMLResponse)
-def invite_page(token: str):
-    if not is_valid_invite(token):
-        raise HTTPException(403, "Invite inválido o expirado")
+    .container {
+      max-width: 820px;
+      width: 100%;
+      background: rgba(0,0,0,0.15);
+      padding: 40px 36px;
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+    }
 
-    return f"""
-    <html>
-    <body>
-        <h2>Timing Engine – Tester</h2>
-        <form method="post" action="/test/{token}">
-            Nombre / Alias:<br>
-            <input name="name"/><br><br>
+    /* Marca de agua */
+    .container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 60%;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'>
+          <defs>
+            <path id='arcTop' d='M 60 250 A 190 190 0 0 1 440 250'/>
+          </defs>
+          <circle cx='250' cy='250' r='190' fill='none' stroke='%234b1f2a' stroke-width='6'/>
+          <circle cx='250' cy='250' r='165' fill='none' stroke='%234b1f2a' stroke-width='2' opacity='0.6'/>
+          <text fill='%234b1f2a' font-size='16' letter-spacing='1.6' font-family='Arial' opacity='0.4'>
+            <textPath href='%23arcTop' startOffset='50%' text-anchor='middle'>
+              MANAGED BY · JAVEC
+            </textPath>
+          </text>
+          <text x='250' y='285' text-anchor='middle' fill='%234b1f2a'
+                font-size='88' font-style='italic' font-family='Georgia, serif'>
+            MTL
+          </text>
+        </svg>");
+    }
 
-            Symbol:<br>
-            <input name="symbol" value="BTCUSDT"/><br><br>
+    .content {
+      position: relative;
+      z-index: 1;
+    }
 
-            Timeframe:<br>
-            <input name="timeframe" value="5m"/><br><br>
+    h1 {
+      margin-top: 0;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
 
-            Estructura OK:
-            <input type="checkbox" name="structure_ok"/><br>
+    p {
+      line-height: 1.6;
+      color: var(--text-soft);
+    }
 
-            Riesgo OK:
-            <input type="checkbox" name="risk_ok"/><br><br>
+    .terms {
+      margin-top: 28px;
+      padding: 20px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      max-height: 260px;
+      overflow-y: auto;
+    }
 
-            <button type="submit">Probar</button>
-        </form>
-    </body>
-    </html>
-    """
+    .terms h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
 
-@app.post("/test/{token}", response_class=HTMLResponse)
-async def run_test(token: str, request: Request):
-    if not is_valid_invite(token):
-        raise HTTPException(403, "Invite inválido")
+    .accept {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
 
-    form = await request.form()
-    name = form.get("name", "tester")
-    symbol = form.get("symbol")
-    timeframe = form.get("timeframe")
-    structure_ok = "structure_ok" in form
-    risk_ok = "risk_ok" in form
+    button {
+      margin-top: 24px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      cursor: not-allowed;
+      background: #2a2a2a;
+      color: #999;
+      transition: all 0.2s ease;
+    }
 
-    candles = get_binance(symbol, timeframe)
-    state = engine.evaluate(candles)
-    decision = checklist_decision(state, structure_ok, risk_ok)
+    button.enabled {
+      background: var(--wine);
+      color: white;
+      cursor: pointer;
+    }
 
-    TESTERS.setdefault(token, []).append({
-        "name": name,
-        "symbol": symbol,
-        "decision": decision
-    })
+    footer {
+      margin-top: 26px;
+      font-size: 0.8rem;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
 
-    return f"""
-    <html>
-    <body>
-        <h3>Resultado</h3>
-        <pre>{decision}</pre>
-        <a href="/invite/{token}">Volver</a>
-    </body>
-    </html>
-    """
+<body>
+  <div class="container">
+    <div class="content">
 
-@app.get("/testers")
-def list_testers():
-    return TESTERS
+      <h1>Market Timing Lab</h1>
+
+      <p>
+        Market Timing Lab es un entorno privado de evaluación técnica orientado a traders con criterio propio.
+        Esta herramienta no proporciona señales, recomendaciones ni ejecuciones de trading.
+        Su objetivo es ofrecer <strong>contexto de mercado</strong> y soporte para la toma de decisiones conscientes.
+      </p>
+
+      <div class="terms">
+        <h3>Términos, Condiciones y Disclaimer</h3>
+
+        <p>
+          Este proyecto constituye un sistema experimental de análisis y clasificación de estados de mercado.
+          No debe ser interpretado como asesoría financiera, recomendación de inversión ni garantía de resultados.
+        </p>
+
+        <p>
+          El uso de esta herramienta implica que el usuario asume plena responsabilidad sobre cualquier decisión
+          tomada a partir de la información presentada. Los resultados son meramente informativos y contextuales.
+        </p>
+
+        <p>
+          El acceso es privado. Toda la información, resultados de pruebas y metodología forman parte de un
+          proyecto confidencial y no pueden ser divulgados, replicados ni compartidos con terceros o desarrolladores
+          externos sin autorización expresa.
+        </p>
+
+        <p>
+          La propiedad intelectual del proyecto corresponde a
+          <strong>Jonathan Xavier Benitez Cruz</strong>, documento de identidad 175018xxxx.
+        </p>
+
+        <p>
+          El proyecto podrá, en el futuro, operar bajo un modelo de membresía privada.
+          El acceso actual no implica derecho permanente ni expectativa comercial.
+        </p>
+      </div>
+
+      <div class="accept">
+        <input type="checkbox" id="acceptTerms" />
+        <label for="acceptTerms">
+          He leído y acepto los Términos y Condiciones
+        </label>
+      </div>
+
+      <button id="enterBtn">Acceder al entorno</button>
+
+      <footer>
+        © Market Timing Lab — Gestión: JAVEC
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    const checkbox = document.getElementById("acceptTerms");
+    const button = document.getElementById("enterBtn");
+
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        button.classList.add("enabled");
+        button.disabled = false;
+        button.style.cursor = "pointer";
+      } else {
+        button.classList.remove("enabled");
+        button.disabled = true;
+        button.style.cursor = "not-allowed";
+      }
+    });
+
+    button.addEventListener("click", () => {
+      if (!checkbox.checked) return;
+      alert("Acceso concedido (aquí conectas con el backend / invitación).");
+      // Ejemplo real:
+      // window.location.href = "https://market-timing-lab.onrender.com/create-invite";
+    });
+  </script>
+</body>
+</html>
