@@ -8,60 +8,74 @@
 <style>
 html, body {
   height: 100%;
+  margin: 0;
   overflow: hidden;
 }
 
 :root {
   --vino:#3a0f1c;
-  --vino-dark:#140509;
-  --vino-mid:#4b1625;
-  --black-overlay:rgba(0,0,0,.45);
+  --vino-dark:#1a060c;
+  --vino-bright:#6a1d33;
+  --black-glass:rgba(0,0,0,.45);
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.22);
   --text-main:#f3e9ec;
   --text-soft:#d8c3c9;
 }
 
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
+body{
   background:
-    linear-gradient(var(--black-overlay),var(--black-overlay)),
-    radial-gradient(circle at top, var(--vino-mid) 0%, var(--vino) 45%, var(--vino-dark) 100%);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: var(--text-main);
-  transition: background 1.2s ease;
+    radial-gradient(circle at top, #4b1625 0%, var(--vino) 45%, var(--vino-dark) 100%);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--text-main);
+  transition:background 1.2s ease;
+}
+
+/* ================= CAPA NEGRA DE CONTROL ================= */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.28);
+  z-index:0;
 }
 
 /* ================= CONTENIDO ================= */
-.content {
-  position: relative;
-  z-index: 2;
-  max-width: 820px;
-  margin: 0 auto;
-  min-height: 100vh;
-  padding: 60px 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  transition: opacity .6s ease, transform .6s ease;
+.content{
+  position:relative;
+  z-index:3;
+  max-width:820px;
+  margin:0 auto;
+  height:100vh;
+  padding:48px 24px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+  transition:opacity .6s ease, transform .6s ease;
 }
 
-h1 {
-  letter-spacing:.18em;
-  font-weight:500;
-  margin-bottom:6px;
+/* ===== TÍTULO PRINCIPAL ===== */
+h1{
+  font-family:'Brush Script MT','Segoe Script',cursive;
   font-style:italic;
+  font-size:2.6rem;
+  color:#000; /* CONTRASTE NEGRO */
+  margin-bottom:6px;
 }
 
-.subtitle {
+/* ===== SUB ===== */
+.subtitle{
   font-weight:300;
   font-size:1rem;
   color:var(--text-soft);
-  margin-bottom:36px;
+  margin-bottom:32px;
 }
 
-p {
+/* ===== TEXTO ===== */
+p{
   font-size:.95rem;
   line-height:1.65;
   color:var(--text-soft);
@@ -69,128 +83,138 @@ p {
   white-space:pre-line;
 }
 
-strong { color: var(--text-main); }
-
 /* ================= LOGIN ================= */
-.input {
-  width: 240px;
-  padding: 10px;
-  margin: 6px auto;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,.25);
-  background: rgba(0,0,0,.35);
-  color: var(--text-main);
+.input{
+  width:220px;
+  padding:9px 10px;
+  margin:6px auto;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--black-glass);
+  color:var(--text-main);
+  outline:none;
+}
+
+.input:focus{
+  border-color:#fff;
 }
 
 /* ================= ACEPTACIÓN ================= */
-.terms-accept {
-  margin-top: 34px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255,255,255,.18);
+.terms-accept{
+  margin-top:34px;
+  padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.18);
 }
 
-.terms-accept label {
+.terms-accept label{
   font-size:.9rem;
   cursor:pointer;
 }
 
-.terms-accept a {
+.terms-accept a{
   color:#9fd3ff;
   text-decoration:none;
 }
 
-#enterBtn {
+#enterBtn{
+  display:inline-block;
   margin-top:18px;
-  background:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.12);
   border:1px solid rgba(255,255,255,.35);
   color:var(--text-main);
-  padding:10px 32px;
+  padding:10px 30px;
   border-radius:999px;
   cursor:not-allowed;
 }
 
-#enterBtn.enabled {
-  background:rgba(255,255,255,.18);
+#enterBtn.enabled{
   cursor:pointer;
+  background:rgba(255,255,255,.22);
 }
 
-footer {
+footer{
   margin-top:40px;
   font-size:.8rem;
-  color:rgba(255,255,255,.5);
+  color:rgba(255,255,255,.55);
 }
 
 /* ================= SELLO ================= */
-@keyframes sealFloat {
-  0%{transform:translate(-50%,-50%)}
-  50%{transform:translate(-50%,-55%)}
-  100%{transform:translate(-50%,-50%)}
-}
-
-.seal {
+.seal{
   position:fixed;
-  top:48%;
+  top:55%;
   left:50%;
-  pointer-events:none;
+  transform:translate(-50%,-50%);
+  opacity:.09;
   z-index:1;
-  opacity:.16;
-  animation:sealFloat 22s ease-in-out infinite;
+  pointer-events:none;
 }
 
-.seal svg {
-  width:420px;
-  height:420px;
+.seal svg,
+.seal *{
+  pointer-events:none;
+}
+
+.seal svg{
+  width:360px;
+  height:360px;
 }
 
 /* ================= LOADING ================= */
-body.loading {
+body.loading{
   background:
-    linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
-    radial-gradient(circle at center,#6b1f35 0%,#3a0f1c 65%,#120408 100%);
+    radial-gradient(circle at center, var(--vino-bright) 0%, #3a0f1c 55%, #120306 100%);
 }
 
-body.loading .content {
+body.loading .content{
   opacity:0;
-  transform:scale(.97);
+  transform:scale(.98);
 }
 
-body.loading .seal {
-  opacity:.32;
+body.loading .seal{
+  opacity:.25;
   transform:translate(-50%,-50%) scale(1.15);
-  animation:none;
 }
 
-.loader {
+/* ================= LOADER ================= */
+.loader{
   position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   opacity:0;
-  z-index:5;
+  z-index:4;
+  pointer-events:none;
 }
 
-body.loading .loader {
+body.loading .loader{
   opacity:1;
 }
 
-.loader-content {
+.loader-content{
   text-align:center;
 }
 
-.loader-label {
+.loader-label{
   font-size:.75rem;
-  letter-spacing:.2em;
+  letter-spacing:.22em;
   color:rgba(243,233,236,.75);
   margin-bottom:14px;
+  animation:pulse 2.8s ease-in-out infinite;
 }
 
-.loader-progress {
+@keyframes pulse{
+  0%{opacity:.4}
+  50%{opacity:.9}
+  100%{opacity:.4}
+}
+
+.loader-progress{
   font-size:1.2rem;
 }
 
 /* ================= MODAL ================= */
-.modal {
+.modal{
   display:none;
   position:fixed;
   inset:0;
@@ -201,8 +225,8 @@ body.loading .loader {
   padding:20px;
 }
 
-.modal-content {
-  background:#1c070c;
+.modal-content{
+  background:#2a0c15;
   max-width:760px;
   max-height:85vh;
   overflow-y:auto;
@@ -211,20 +235,19 @@ body.loading .loader {
   color:var(--text-soft);
 }
 
-.modal-content h3 {
-  margin-top:0;
-  color:var(--text-main);
+.modal-content h3{
+  color:#fff;
 }
 
-.close {
+.close{
   text-align:right;
   margin-top:16px;
 }
 
-.close button {
+.close button{
   background:none;
   border:1px solid rgba(255,255,255,.4);
-  color:var(--text-main);
+  color:#fff;
   padding:6px 18px;
   border-radius:999px;
   cursor:pointer;
@@ -235,58 +258,105 @@ body.loading .loader {
 <body>
 
 <div class="content">
-<h1>MARKET TIMING LAB</h1>
-<div class="subtitle">Entorno de pruebas privadas</div>
+  <h1>Market Timing Lab</h1>
+  <div class="subtitle">Entorno de pruebas privadas</div>
 
-<p>
+  <p>
 Market Timing Lab es un entorno experimental orientado a la evaluación del estado del mercado y el timing operativo, diseñado como soporte para traders con criterio propio.
 
 La herramienta no ejecuta operaciones, no ofrece señales ni realiza recomendaciones financieras.
-</p>
+  </p>
 
-<input id="user" class="input" placeholder="Usuario">
-<input id="pass" class="input" type="password" placeholder="Contraseña">
+  <input id="user" class="input" placeholder="Usuario">
+  <input id="pass" class="input" type="password" placeholder="Contraseña">
 
-<div class="terms-accept">
-<label>
-<input type="checkbox" id="acceptTerms">
-He leído y acepto los <a href="#" onclick="openModal()">Términos y Condiciones</a>
-</label><br>
+  <div class="terms-accept">
+    <label>
+      <input type="checkbox" id="acceptTerms">
+      He leído y acepto los <a href="#" onclick="openModal()">Términos y Condiciones</a>
+    </label><br>
+    <button id="enterBtn" disabled onclick="enterApp()">Acceder al entorno</button>
+  </div>
 
-<button id="enterBtn" disabled onclick="enterApp()">Acceder al entorno</button>
-</div>
-
-<footer>Acceso limitado · Entorno privado en desarrollo activo</footer>
+  <footer>Acceso limitado · Entorno privado en desarrollo activo</footer>
 </div>
 
 <div class="seal">
 <svg viewBox="0 0 400 400">
-<circle cx="200" cy="200" r="180" fill="none" stroke="#ffffff" stroke-width="2"/>
-<circle cx="200" cy="200" r="150" fill="none" stroke="#ffffff" stroke-width="1"/>
-<text x="200" y="215" text-anchor="middle" fill="#ffffff" font-size="48"
-style="font-family:'Brush Script MT','Segoe Script',cursive;font-style:italic">
-Market Timing Lab
-</text>
+  <circle cx="200" cy="200" r="180" fill="none" stroke="#fff" stroke-width="2"/>
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#fff" stroke-width="1"/>
+  <text x="200" y="215" text-anchor="middle" fill="#fff" font-size="42"
+    style="font-family:'Brush Script MT',cursive;font-style:italic">
+    Market Timing Lab
+  </text>
 </svg>
 </div>
 
 <div class="loader">
-<div class="loader-content">
-<div class="loader-label">INITIALIZING SYSTEM</div>
-<div class="loader-progress" id="loaderText">0%</div>
-</div>
+  <div class="loader-content">
+    <div class="loader-label" id="loaderLabel">INITIALIZING SYSTEM</div>
+    <div class="loader-progress" id="loaderText">0%</div>
+  </div>
 </div>
 
 <div class="modal" id="termsModal">
-<div class="modal-content">
-<h3>Términos de Uso — Market Timing Lab</h3>
-<p>
-[PEGA AQUÍ **ÍNTEGRO** TU TEXTO LEGAL COMPLETO SIN MODIFICAR]
+  <div class="modal-content">
+    <h3>Términos de Uso — Market Timing Lab</h3>
+    p>
+<b>1. Introducción</b><br>
+El presente documento regula el acceso y uso de Market Timing Lab (en adelante, “el Proyecto”). El acceso implica aceptación expresa y sin reservas.
 </p>
-<div class="close">
-<button onclick="closeModal()">Cerrar</button>
-</div>
-</div>
+
+<p>
+<b>2. Naturaleza del Proyecto</b><br>
+Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo. Se encuentra en fase de pruebas controladas.
+</p>
+
+<p>
+<b>3. Alcance y finalidad</b><br>
+Herramienta de lectura contextual destinada a apoyar el análisis del mercado. No sustituye el criterio humano ni garantiza resultados.
+</p>
+
+<p>
+<b>4. Lo que el Proyecto NO ofrece</b><br>
+No ejecuta operaciones, no proporciona señales, no emite recomendaciones financieras, no constituye asesoramiento de inversión ni garantiza rentabilidad.
+</p>
+
+<p>
+<b>5. Resultados y limitaciones</b><br>
+Los resultados son informativos, pueden variar y están sujetos a ajustes, cambios o eliminación sin previo aviso.
+</p>
+
+<p>
+<b>6. Carácter privado y confidencialidad</b><br>
+Toda la información, resultados, metodologías y datos del Proyecto son CONFIDENCIALES y no pueden ser divulgados ni compartidos con terceros o desarrolladores externos.
+</p>
+
+<p>
+<b>7. Uso responsable</b><br>
+El usuario se compromete a utilizar el Proyecto de forma responsable y consciente, sin atribuirle resultados financieros propios.
+</p>
+
+<p>
+<b>8. Acceso y modificaciones</b><br>
+El acceso puede ser suspendido o revocado en cualquier momento. La estructura del Proyecto puede ser modificada sin previo aviso.
+</p>
+
+<p>
+<b>9. Exención de responsabilidad</b><br>
+El responsable del Proyecto no será responsable por pérdidas financieras ni decisiones tomadas por el usuario.
+</p>
+
+<p>
+<b>10. Propiedad intelectual</b><br>
+Todo el contenido, lógica, metodología, código y diseño del Proyecto es propiedad intelectual de:<br><br>
+<b>Jonathan Xavier Benitez Cruz</b><br>
+Documento de identidad: 175018xxxx
+</p>
+    <div class="close">
+      <button onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -300,12 +370,18 @@ function validate(){
   button.disabled=!ok;
   button.classList.toggle("enabled",ok);
 }
+
 checkbox.onchange=validate;
 user.oninput=validate;
 pass.oninput=validate;
 
-function openModal(){termsModal.style.display="flex"}
-function closeModal(){termsModal.style.display="none"}
+function openModal(){
+  document.getElementById("termsModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("termsModal").style.display="none";
+}
 
 function enterApp(){
   document.body.classList.add("loading");
@@ -313,7 +389,7 @@ function enterApp(){
   const t=document.getElementById("loaderText");
   const i=setInterval(()=>{
     p+=4;
-    if(p>=100){p=100;clearInterval(i);setTimeout(()=>location.href="/app.html",400)}
+    if(p>=100){p=100;clearInterval(i);setTimeout(()=>location.href="/app.html",500);}
     t.textContent=p+"%";
   },120);
 }
