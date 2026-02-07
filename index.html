@@ -6,18 +6,14 @@
 <title>Market Timing Lab</title>
 
 <style>
-html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
+html,body{height:100%;margin:0;overflow:hidden}
 
 /* ===== PALETA ===== */
 :root{
   --vino:#3a0f1c;
-  --vino-dark:#1b070c;
-  --negro:#0b0b0c;
-  --glass:rgba(0,0,0,.38);
+  --vino-dark:#18060a;
+  --negro:#000;
+  --glass:rgba(0,0,0,.42);
   --border:rgba(255,255,255,.18);
   --text:#f2e9ec;
   --soft:#d6c3c9;
@@ -27,9 +23,9 @@ html, body {
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   background:
-    radial-gradient(circle at top,#4b1a2b 0%,var(--vino) 45%,var(--vino-dark) 100%);
+    radial-gradient(circle at top,#451624 0%,var(--vino) 45%,var(--vino-dark) 100%);
   color:var(--text);
-  transition:background 1.2s ease;
+  transition:background 1.4s ease;
 }
 
 /* ===== SELLO ===== */
@@ -39,17 +35,20 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  opacity:.10;
   pointer-events:none;
   z-index:0;
-  transition:all 1.4s ease;
+  opacity:.12;
+  transition:all 2.2s ease;
 }
 
-.seal svg{width:380px;height:380px}
+.seal svg{
+  width:300px;
+  height:300px;
+}
 
 body.loading .seal{
-  opacity:.45;
-  transform:scale(1.15);
+  opacity:.38;
+  transform:scale(1.08) rotate(-90deg);
 }
 
 /* ===== CONTENIDO ===== */
@@ -64,36 +63,29 @@ body.loading .seal{
   text-align:center;
   padding:40px 24px;
   gap:18px;
-  transition:opacity .8s ease, transform .8s ease;
+  transition:opacity 1.2s ease, transform 1.2s ease;
 }
 
 body.loading .content{
   opacity:0;
-  transform:scale(.98);
+  transform:scale(.97);
 }
 
-/* ===== TEXTO ===== */
+/* ===== TÍTULO ===== */
 h1{
   font-size:1.15rem;
   letter-spacing:.18em;
   font-style:italic;
   color:#000;
-  background:rgba(255,255,255,.65);
-  padding:6px 14px;
+  background:rgba(255,255,255,.82);
+  padding:6px 16px;
   border-radius:6px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.15);
 }
 
-.subtitle{
-  font-size:.95rem;
-  color:var(--soft);
-}
-
-p{
-  max-width:640px;
-  font-size:.9rem;
-  line-height:1.6;
-  color:var(--soft);
-}
+/* ===== TEXTO ===== */
+.subtitle{font-size:.95rem;color:var(--soft)}
+p{max-width:640px;font-size:.9rem;line-height:1.6;color:var(--soft)}
 
 /* ===== INPUTS ===== */
 input{
@@ -106,15 +98,10 @@ input{
   outline:none;
 }
 
-/* ===== TÉRMINOS ===== */
-.terms{
-  margin-top:16px;
-  font-size:.85rem;
-}
-
+/* ===== BOTÓN ===== */
 button{
   margin-top:16px;
-  padding:10px 32px;
+  padding:10px 34px;
   border-radius:999px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.12);
@@ -132,14 +119,14 @@ button.enabled{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.75);
+  background:rgba(0,0,0,.78);
   z-index:5;
   align-items:center;
   justify-content:center;
 }
 
 .modal-box{
-  background:#16060a;
+  background:#140509;
   max-width:780px;
   max-height:85vh;
   overflow:auto;
@@ -150,11 +137,7 @@ button.enabled{
 }
 
 .modal-box h3{color:var(--text)}
-
-.modal-box button{
-  margin-top:20px;
-  cursor:pointer;
-}
+.modal-box button{margin-top:20px;cursor:pointer}
 
 /* ===== LOADER ===== */
 .loader{
@@ -166,27 +149,20 @@ button.enabled{
   opacity:0;
   z-index:4;
   pointer-events:none;
+  transition:opacity 1.4s ease;
 }
 
-body.loading .loader{
-  opacity:1;
-}
+body.loading .loader{opacity:1}
 
-.loader-inner{
-  text-align:center;
+.loader-inner{text-align:center}
+.loader-label{
+  font-size:.8rem;
+  letter-spacing:.2em;
+  opacity:.7;
 }
-
 .progress{
-  font-size:1.2rem;
-  margin-top:12px;
-}
-
-/* ===== FOOTER ===== */
-footer{
-  position:absolute;
-  bottom:16px;
-  font-size:.75rem;
-  opacity:.6;
+  font-size:1.3rem;
+  margin-top:14px;
 }
 </style>
 </head>
@@ -196,9 +172,9 @@ footer{
 <!-- SELLO -->
 <div class="seal">
 <svg viewBox="0 0 400 400">
-  <circle cx="200" cy="200" r="170" fill="none" stroke="#fff" stroke-width="2"/>
+  <circle cx="200" cy="200" r="165" fill="none" stroke="#fff" stroke-width="2"/>
   <text x="200" y="215" text-anchor="middle"
-    font-size="44" fill="#fff"
+    font-size="42" fill="#fff"
     style="font-family:'Brush Script MT',cursive;font-style:italic">
     Market Timing Lab
   </text>
@@ -211,29 +187,25 @@ footer{
   <div class="subtitle">Entorno privado · Lectura contextual</div>
 
   <p>
-Herramienta experimental de evaluación de estado de mercado.
+Herramienta experimental de evaluación del estado de mercado.
 No ejecuta operaciones. No emite señales. No ofrece asesoramiento financiero.
   </p>
 
   <input id="user" placeholder="Usuario">
   <input id="pass" type="password" placeholder="Contraseña">
 
-  <div class="terms">
-    <label>
-      <input type="checkbox" id="accept">
-      Acepto los <a href="#" onclick="openTerms()">Términos y Condiciones</a>
-    </label>
-  </div>
+  <label style="font-size:.85rem">
+    <input type="checkbox" id="accept">
+    Acepto los <a href="#" onclick="openTerms()">Términos y Condiciones</a>
+  </label>
 
   <button id="enter" onclick="enter()">Acceder</button>
-
-  <footer>Proyecto privado · Jonathan Xavier Benitez Cruz</footer>
 </div>
 
 <!-- LOADER -->
 <div class="loader">
   <div class="loader-inner">
-    <div>Inicializando sistema</div>
+    <div class="loader-label" id="label">INITIALIZING CONTEXT</div>
     <div class="progress" id="prog">0%</div>
   </div>
 </div>
@@ -241,20 +213,19 @@ No ejecuta operaciones. No emite señales. No ofrece asesoramiento financiero.
 <!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
-<h3>Términos de Uso — Market Timing Lab</h3>
-<p>
+    <h3>Términos de Uso — Market Timing Lab</h3>
+    <p>
 Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo.
 
 No ejecuta operaciones, no proporciona señales de trading, no constituye asesoramiento financiero ni garantiza resultados.
 
 Toda la información, metodología, resultados y visualizaciones son CONFIDENCIALES.
-Está prohibida su divulgación, reproducción o transferencia a terceros.
 
 La propiedad intelectual corresponde a:
 Jonathan Xavier Benitez Cruz
 Documento de identidad: 175018xxxx
-</p>
-<button onclick="closeTerms()">Cerrar</button>
+    </p>
+    <button onclick="closeTerms()">Cerrar</button>
   </div>
 </div>
 
@@ -271,22 +242,40 @@ function validate(){
 }
 user.oninput=pass.oninput=accept.onchange=validate;
 
-function openTerms(){document.getElementById("modal").style.display="flex";}
-function closeTerms(){document.getElementById("modal").style.display="none";}
+function openTerms(){modal.style.display="flex"}
+function closeTerms(){modal.style.display="none"}
 
 function enter(){
   if(btn.disabled) return;
   document.body.classList.add("loading");
+
   let p=0;
   const prog=document.getElementById("prog");
-  const t=setInterval(()=>{
-    p+=5;
+  const label=document.getElementById("label");
+
+  const phases=[
+    "INITIALIZING CONTEXT",
+    "ASSESSING MARKET STATE",
+    "NORMALIZING VOLATILITY",
+    "FINALIZING SESSION"
+  ];
+
+  let phase=0;
+
+  const interval=setInterval(()=>{
+    p+=1;
     prog.textContent=p+"%";
+
+    if(p%25===0 && phase<phases.length-1){
+      phase++;
+      label.textContent=phases[phase];
+    }
+
     if(p>=100){
-      clearInterval(t);
+      clearInterval(interval);
       window.location.href="/app.html";
     }
-  },120);
+  },180); // ~18 segundos
 }
 </script>
 
