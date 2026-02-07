@@ -8,11 +8,11 @@
 <style>
 html,body{height:100%;margin:0;overflow:hidden}
 
-/* ===== PALETA ===== */
 :root{
   --vino:#3a0f1c;
   --vino-dark:#18060a;
   --negro:#000;
+  --blanco:#fff;
   --glass:rgba(0,0,0,.42);
   --border:rgba(255,255,255,.18);
   --text:#f2e9ec;
@@ -25,7 +25,7 @@ body{
   background:
     radial-gradient(circle at top,#451624 0%,var(--vino) 45%,var(--vino-dark) 100%);
   color:var(--text);
-  transition:background 1.4s ease;
+  transition:background 1.6s ease;
 }
 
 /* ===== SELLO ===== */
@@ -38,7 +38,7 @@ body{
   pointer-events:none;
   z-index:0;
   opacity:.12;
-  transition:all 2.2s ease;
+  transition:opacity 2s ease, transform 2s ease;
 }
 
 .seal svg{
@@ -46,9 +46,39 @@ body{
   height:300px;
 }
 
+/* Anillos */
+#seal-rings{
+  transform-origin:50% 50%;
+  transition:transform 20s linear;
+}
+
+/* Texto del sello */
+#seal-text text{
+  fill:#fff;
+  transition:fill 1.6s ease, stroke 1.6s ease;
+}
+
+/* ===== TRANSICIÓN ===== */
+body.loading{
+  background:
+    radial-gradient(circle at center,#2b0b12 0%,#0e0305 75%);
+}
+
 body.loading .seal{
-  opacity:.38;
-  transform:scale(1.08) rotate(-90deg);
+  opacity:.95;
+  transform:scale(1.1);
+}
+
+/* SOLO giran los anillos */
+body.loading #seal-rings{
+  transform:rotate(-360deg);
+}
+
+/* Texto NEGRO con borde BLANCO */
+body.loading #seal-text text{
+  fill:#000;
+  stroke:#fff;
+  stroke-width:1.2;
 }
 
 /* ===== CONTENIDO ===== */
@@ -71,7 +101,6 @@ body.loading .content{
   transform:scale(.97);
 }
 
-/* ===== TÍTULO ===== */
 h1{
   font-size:1.15rem;
   letter-spacing:.18em;
@@ -80,14 +109,11 @@ h1{
   background:rgba(255,255,255,.82);
   padding:6px 16px;
   border-radius:6px;
-  box-shadow:0 0 0 1px rgba(0,0,0,.15);
 }
 
-/* ===== TEXTO ===== */
 .subtitle{font-size:.95rem;color:var(--soft)}
 p{max-width:640px;font-size:.9rem;line-height:1.6;color:var(--soft)}
 
-/* ===== INPUTS ===== */
 input{
   width:220px;
   padding:10px;
@@ -95,10 +121,8 @@ input{
   border:1px solid var(--border);
   background:var(--glass);
   color:var(--text);
-  outline:none;
 }
 
-/* ===== BOTÓN ===== */
 button{
   margin-top:16px;
   padding:10px 34px;
@@ -113,31 +137,6 @@ button.enabled{
   cursor:pointer;
   background:rgba(255,255,255,.22);
 }
-
-/* ===== MODAL ===== */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.78);
-  z-index:5;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-box{
-  background:#140509;
-  max-width:780px;
-  max-height:85vh;
-  overflow:auto;
-  padding:28px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  color:var(--soft);
-}
-
-.modal-box h3{color:var(--text)}
-.modal-box button{margin-top:20px;cursor:pointer}
 
 /* ===== LOADER ===== */
 .loader{
@@ -172,12 +171,30 @@ body.loading .loader{opacity:1}
 <!-- SELLO -->
 <div class="seal">
 <svg viewBox="0 0 400 400">
-  <circle cx="200" cy="200" r="165" fill="none" stroke="#fff" stroke-width="2"/>
-  <text x="200" y="215" text-anchor="middle"
-    font-size="42" fill="#fff"
-    style="font-family:'Brush Script MT',cursive;font-style:italic">
-    Market Timing Lab
-  </text>
+  <g id="seal-rings">
+    <circle cx="200" cy="200" r="165" fill="none" stroke="#fff" stroke-width="2"/>
+    <circle cx="200" cy="200" r="140" fill="none" stroke="#fff" stroke-width="1"/>
+  </g>
+
+  <g id="seal-text">
+    <text x="200" y="145" text-anchor="middle"
+      font-size="16"
+      style="font-family:Georgia,serif;letter-spacing:2">
+      by Javec
+    </text>
+
+    <text x="200" y="220" text-anchor="middle"
+      font-size="44"
+      style="font-family:'Brush Script MT','Segoe Script',cursive;font-style:italic">
+      Market Timing Lab
+    </text>
+
+    <text x="200" y="260" text-anchor="middle"
+      font-size="13"
+      style="font-family:Georgia,serif;letter-spacing:3">
+      M · T · L
+    </text>
+  </g>
 </svg>
 </div>
 
@@ -196,7 +213,7 @@ No ejecuta operaciones. No emite señales. No ofrece asesoramiento financiero.
 
   <label style="font-size:.85rem">
     <input type="checkbox" id="accept">
-    Acepto los <a href="#" onclick="openTerms()">Términos y Condiciones</a>
+    Acepto los Términos y Condiciones
   </label>
 
   <button id="enter" onclick="enter()">Acceder</button>
@@ -207,25 +224,6 @@ No ejecuta operaciones. No emite señales. No ofrece asesoramiento financiero.
   <div class="loader-inner">
     <div class="loader-label" id="label">INITIALIZING CONTEXT</div>
     <div class="progress" id="prog">0%</div>
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>Términos de Uso — Market Timing Lab</h3>
-    <p>
-Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo.
-
-No ejecuta operaciones, no proporciona señales de trading, no constituye asesoramiento financiero ni garantiza resultados.
-
-Toda la información, metodología, resultados y visualizaciones son CONFIDENCIALES.
-
-La propiedad intelectual corresponde a:
-Jonathan Xavier Benitez Cruz
-Documento de identidad: 175018xxxx
-    </p>
-    <button onclick="closeTerms()">Cerrar</button>
   </div>
 </div>
 
@@ -241,9 +239,6 @@ function validate(){
   btn.disabled=!ok;
 }
 user.oninput=pass.oninput=accept.onchange=validate;
-
-function openTerms(){modal.style.display="flex"}
-function closeTerms(){modal.style.display="none"}
 
 function enter(){
   if(btn.disabled) return;
@@ -275,7 +270,7 @@ function enter(){
       clearInterval(interval);
       window.location.href="/app.html";
     }
-  },180); // ~18 segundos
+  },180); // ~18–20s
 }
 </script>
 
