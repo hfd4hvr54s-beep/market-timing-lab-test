@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root {
+:root{
   --vino-base:#3a0f1c;
   --vino-dark:#240910;
   --glass:rgba(255,255,255,0.09);
@@ -17,47 +17,52 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 
+html,body{
+  width:100%;
+  height:100%;
+}
+
 body{
-  height:100vh;
   background:radial-gradient(circle at top,#541a2b 0%,var(--vino-base) 45%,var(--vino-dark) 100%);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   color:var(--text-main);
   overflow:hidden;
+  position:relative;
 }
 
 /* ===== SELLO ===== */
 .seal-bg{
-  position:absolute;
+  position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   pointer-events:none;
   z-index:0;
-  opacity:0.28;
+  opacity:0.32;
   animation:float 18s ease-in-out infinite;
-  transition:all 1.6s ease;
+  transition:opacity 1.2s ease, transform 1.6s ease;
 }
 
 .seal-bg svg{
-  width:460px;
-  height:460px;
+  width:420px;
+  height:420px;
 }
 
 @keyframes float{
   0%{transform:translateY(0)}
-  50%{transform:translateY(-16px)}
+  50%{transform:translateY(-14px)}
   100%{transform:translateY(0)}
 }
 
 /* ===== TRANSICIÓN ===== */
-body.loading .seal-bg{
-  opacity:0.45;
-  transform:scale(1.12) rotate(180deg);
-}
-
 body.loading{
   background:radial-gradient(circle at center,#6b1f35 0%,#3a0f1c 70%,#1c060b 100%);
+}
+
+body.loading .seal-bg{
+  opacity:0.55;
+  transform:scale(1.12) rotate(-180deg);
 }
 
 /* ===== APP ===== */
@@ -65,15 +70,29 @@ body.loading{
   position:relative;
   z-index:1;
   height:100%;
-  display:grid;
-  grid-template-rows:12% 48% 30% 10%;
+  max-width:1200px;
+  margin:0 auto;
   padding:24px;
+  display:grid;
+  grid-template-rows:80px 1fr 260px 60px;
   gap:16px;
-  transition:opacity 1.2s ease;
+  transition:opacity 1s ease;
 }
 
 body.loading .app{
   opacity:0;
+}
+
+/* ===== DEMO TAG ===== */
+.demo-tag{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:0.72rem;
+  letter-spacing:0.14em;
+  opacity:0.6;
+  z-index:2;
 }
 
 /* ===== HEADER ===== */
@@ -88,32 +107,21 @@ body.loading .app{
   backdrop-filter:blur(10px);
 }
 
-.header .title{
+.title{
   letter-spacing:0.18em;
   font-size:0.85rem;
 }
 
-.header .context{
+.context{
   font-size:0.9rem;
   color:var(--text-soft);
-}
-
-/* ===== DEMO TAG ===== */
-.demo-tag{
-  position:absolute;
-  top:14px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:0.75rem;
-  letter-spacing:0.12em;
-  opacity:0.65;
 }
 
 /* ===== CORE ===== */
 .core{
   background:var(--glass);
   border:1px solid var(--glass-border);
-  border-radius:18px;
+  border-radius:20px;
   backdrop-filter:blur(12px);
   display:flex;
   flex-direction:column;
@@ -123,14 +131,14 @@ body.loading .app{
 }
 
 .state{
-  font-size:3.1rem;
+  font-size:3rem;
   letter-spacing:0.16em;
 }
 
 .confidence{
   width:60%;
   height:6px;
-  background:rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.15);
   border-radius:999px;
   overflow:hidden;
 }
@@ -152,9 +160,11 @@ body.loading .app{
 .volatility{
   background:var(--glass);
   border:1px solid var(--glass-border);
-  border-radius:16px;
+  border-radius:18px;
   backdrop-filter:blur(12px);
   padding:18px;
+  display:flex;
+  flex-direction:column;
 }
 
 .volatility-title{
@@ -165,7 +175,7 @@ body.loading .app{
 }
 
 .volatility-placeholder{
-  height:100%;
+  flex:1;
   border-radius:10px;
   background:linear-gradient(
     to right,
@@ -184,14 +194,15 @@ body.loading .app{
 
 /* ===== LOADER ===== */
 .loader{
-  position:absolute;
+  position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
+  background:transparent;
   opacity:0;
   pointer-events:none;
-  z-index:2;
+  z-index:3;
   transition:opacity 0.6s ease;
 }
 
@@ -218,45 +229,45 @@ body.loading .loader{
 
 <!-- SELLO -->
 <div class="seal-bg">
-<svg viewBox="0 0 400 400">
-<circle cx="200" cy="200" r="170" fill="none" stroke="#fff" stroke-width="2"/>
-<text x="200" y="210" text-anchor="middle"
-font-size="42" fill="#fff"
-style="font-family:'Brush Script MT',cursive;font-style:italic">
-Market Timing Lab
-</text>
-</svg>
+  <svg viewBox="0 0 400 400">
+    <circle cx="200" cy="200" r="170" fill="none" stroke="#fff" stroke-width="2"/>
+    <text x="200" y="215" text-anchor="middle"
+      font-size="42" fill="#fff"
+      style="font-family:'Brush Script MT',cursive;font-style:italic">
+      Market Timing Lab
+    </text>
+  </svg>
 </div>
 
 <!-- LOADER -->
 <div class="loader">
-<div class="loader-ring"></div>
+  <div class="loader-ring"></div>
 </div>
 
 <!-- APP -->
 <div class="app">
 
-<div class="demo-tag">Vista demostrativa · Lectura contextual</div>
+  <div class="demo-tag">Vista demostrativa · Lectura contextual</div>
 
-<div class="header">
-<div class="title">MARKET TIMING LAB</div>
-<div class="context">BTCUSDT · 5m</div>
-</div>
+  <div class="header">
+    <div class="title">MARKET TIMING LAB</div>
+    <div class="context">BTCUSDT · 5m</div>
+  </div>
 
-<div class="core">
-<div class="state">CONSTRUYENDO</div>
-<div class="confidence"></div>
-<div class="confidence-label">Confiabilidad · Media–Alta</div>
-</div>
+  <div class="core">
+    <div class="state">CONSTRUYENDO</div>
+    <div class="confidence"></div>
+    <div class="confidence-label">Confiabilidad · Media–Alta</div>
+  </div>
 
-<div class="volatility">
-<div class="volatility-title">VOLATILIDAD</div>
-<div class="volatility-placeholder"></div>
-</div>
+  <div class="volatility">
+    <div class="volatility-title">VOLATILIDAD</div>
+    <div class="volatility-placeholder"></div>
+  </div>
 
-<div class="footer">
-Herramienta de lectura contextual · No emite señales ni recomendaciones
-</div>
+  <div class="footer">
+    Herramienta de lectura contextual · No emite señales ni recomendaciones
+  </div>
 
 </div>
 
@@ -264,7 +275,7 @@ Herramienta de lectura contextual · No emite señales ni recomendaciones
 function enterApp(){
   document.body.classList.add("loading");
   setTimeout(()=>{
-    window.location.href="/app"; // backend real
+    window.location.href="/app";
   },2000);
 }
 </script>
