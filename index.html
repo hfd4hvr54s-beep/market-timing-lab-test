@@ -10,22 +10,21 @@ html,body{height:100%;margin:0;overflow:hidden}
 
 :root{
   --vino:#3a0f1c;
-  --vino-dark:#18060a;
+  --vino-dark:#160509;
   --negro:#000;
   --blanco:#fff;
-  --glass:rgba(0,0,0,.42);
+  --glass:rgba(0,0,0,.38);
   --border:rgba(255,255,255,.18);
   --text:#f2e9ec;
   --soft:#d6c3c9;
 }
 
-/* ===== BASE ===== */
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   background:
     radial-gradient(circle at top,#451624 0%,var(--vino) 45%,var(--vino-dark) 100%);
   color:var(--text);
-  transition:background 1.6s ease;
+  transition:background 2s ease;
 }
 
 /* ===== SELLO ===== */
@@ -37,44 +36,41 @@ body{
   justify-content:center;
   pointer-events:none;
   z-index:0;
-  opacity:.12;
-  transition:opacity 2s ease, transform 2s ease;
+  opacity:.08;
+  transition:opacity 2.5s ease, transform 2.5s ease;
 }
 
 .seal svg{
-  width:300px;
-  height:300px;
+  width:240px;
+  height:240px;
 }
 
-/* Anillos */
+/* SOLO ANILLOS */
 #seal-rings{
   transform-origin:50% 50%;
   transition:transform 20s linear;
 }
 
-/* Texto del sello */
 #seal-text text{
   fill:#fff;
-  transition:fill 1.6s ease, stroke 1.6s ease;
+  transition:fill 2s ease, stroke 2s ease;
 }
 
 /* ===== TRANSICIÓN ===== */
 body.loading{
   background:
-    radial-gradient(circle at center,#2b0b12 0%,#0e0305 75%);
+    radial-gradient(circle at center,#1b070c 0%,#070203 80%);
 }
 
 body.loading .seal{
-  opacity:.95;
-  transform:scale(1.1);
+  opacity:.9;
+  transform:scale(1.12);
 }
 
-/* SOLO giran los anillos */
 body.loading #seal-rings{
   transform:rotate(-360deg);
 }
 
-/* Texto NEGRO con borde BLANCO */
 body.loading #seal-text text{
   fill:#000;
   stroke:#fff;
@@ -93,26 +89,32 @@ body.loading #seal-text text{
   text-align:center;
   padding:40px 24px;
   gap:18px;
-  transition:opacity 1.2s ease, transform 1.2s ease;
+  transition:opacity 1.8s ease, transform 1.8s ease;
 }
 
 body.loading .content{
   opacity:0;
-  transform:scale(.97);
+  transform:translateY(-8px);
 }
 
 h1{
-  font-size:1.15rem;
+  font-size:1.1rem;
   letter-spacing:.18em;
   font-style:italic;
   color:#000;
-  background:rgba(255,255,255,.82);
-  padding:6px 16px;
+  background:rgba(255,255,255,.88);
+  padding:6px 18px;
   border-radius:6px;
 }
 
 .subtitle{font-size:.95rem;color:var(--soft)}
-p{max-width:640px;font-size:.9rem;line-height:1.6;color:var(--soft)}
+
+p{
+  max-width:640px;
+  font-size:.9rem;
+  line-height:1.6;
+  color:var(--soft);
+}
 
 input{
   width:220px;
@@ -148,10 +150,12 @@ button.enabled{
   opacity:0;
   z-index:4;
   pointer-events:none;
-  transition:opacity 1.4s ease;
+  transition:opacity 2s ease;
 }
 
-body.loading .loader{opacity:1}
+body.loading .loader{
+  opacity:1;
+}
 
 .loader-inner{text-align:center}
 .loader-label{
@@ -172,25 +176,25 @@ body.loading .loader{opacity:1}
 <div class="seal">
 <svg viewBox="0 0 400 400">
   <g id="seal-rings">
-    <circle cx="200" cy="200" r="165" fill="none" stroke="#fff" stroke-width="2"/>
-    <circle cx="200" cy="200" r="140" fill="none" stroke="#fff" stroke-width="1"/>
+    <circle cx="200" cy="200" r="160" fill="none" stroke="#fff" stroke-width="2"/>
+    <circle cx="200" cy="200" r="135" fill="none" stroke="#fff" stroke-width="1"/>
   </g>
 
   <g id="seal-text">
     <text x="200" y="145" text-anchor="middle"
-      font-size="16"
+      font-size="15"
       style="font-family:Georgia,serif;letter-spacing:2">
       by Javec
     </text>
 
     <text x="200" y="220" text-anchor="middle"
-      font-size="44"
+      font-size="40"
       style="font-family:'Brush Script MT','Segoe Script',cursive;font-style:italic">
       Market Timing Lab
     </text>
 
-    <text x="200" y="260" text-anchor="middle"
-      font-size="13"
+    <text x="200" y="258" text-anchor="middle"
+      font-size="12"
       style="font-family:Georgia,serif;letter-spacing:3">
       M · T · L
     </text>
@@ -205,7 +209,7 @@ body.loading .loader{opacity:1}
 
   <p>
 Herramienta experimental de evaluación del estado de mercado.
-No ejecuta operaciones. No emite señales. No ofrece asesoramiento financiero.
+No ejecuta operaciones, no emite señales ni recomendaciones financieras.
   </p>
 
   <input id="user" placeholder="Usuario">
@@ -258,7 +262,7 @@ function enter(){
   let phase=0;
 
   const interval=setInterval(()=>{
-    p+=1;
+    p++;
     prog.textContent=p+"%";
 
     if(p%25===0 && phase<phases.length-1){
@@ -270,7 +274,7 @@ function enter(){
       clearInterval(interval);
       window.location.href="/app.html";
     }
-  },180); // ~18–20s
+  },200); // ~20s reales
 }
 </script>
 
