@@ -25,30 +25,12 @@
       overflow-x: hidden;
     }
 
-    /* ===== SELLO ===== */
-    .seal {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.08;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .seal svg {
-      width: 360px;
-      height: 360px;
-    }
-
-    /* ===== CONTENIDO ===== */
     .content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 820px;
       margin: 0 auto;
-      padding: 60px 24px 100px;
+      padding: 60px 24px 120px;
     }
 
     h1 {
@@ -71,11 +53,11 @@
       line-height: 1.65;
       color: var(--text-soft);
       margin-bottom: 18px;
+      white-space: pre-line;
     }
 
     strong { color: var(--text-main); }
 
-    /* ===== ACEPTACIÓN ===== */
     .terms-accept {
       margin-top: 46px;
       padding-top: 28px;
@@ -91,10 +73,6 @@
     .terms-accept a {
       color: #9fd3ff;
       text-decoration: none;
-    }
-
-    .terms-accept a:hover {
-      text-decoration: underline;
     }
 
     #enterBtn {
@@ -113,7 +91,28 @@
       cursor: pointer;
     }
 
-    /* ===== MODAL ===== */
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .seal {
+      position: fixed;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .seal svg {
+      width: 360px;
+      height: 360px;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -153,282 +152,133 @@
       border-radius: 999px;
       cursor: pointer;
     }
-
-    footer {
-      margin-top: 60px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- SELLO -->
+<div class="content">
+  <h1>MARKET TIMING LAB</h1>
+  <div class="subtitle">Entorno de pruebas privadas</div>
+
+  <p>
+Market Timing Lab es un entorno experimental orientado a la evaluación del estado del mercado y el timing operativo, diseñado como soporte para traders con criterio propio.
+
+La herramienta no ejecuta operaciones, no ofrece señales ni realiza recomendaciones financieras. Su objetivo es aportar contexto de mercado.
+
+Proyecto creado y desarrollado por Jonathan Xavier Benitez Cruz.
+  </p>
+
+  <div class="terms-accept">
+    <label>
+      <input type="checkbox" id="acceptTerms">
+      He leído y acepto los
+      <a href="#" onclick="openModal()">Términos y Condiciones</a>
+    </label>
+
+    <button id="enterBtn" disabled onclick="enterApp()">
+      Acceder al entorno
+    </button>
+  </div>
+
+  <footer>
+    Acceso limitado · Entorno privado en desarrollo activo
+  </footer>
+</div>
+
+<div class="seal">
   <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-  <!-- Círculos -->
-  <circle cx="200" cy="200" r="180" fill="none" stroke="#ffffff" stroke-width="2"/>
-  <circle cx="200" cy="200" r="150" fill="none" stroke="#ffffff" stroke-width="1"/>
+    <circle cx="200" cy="200" r="180" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="200" cy="200" r="150" fill="none" stroke="#ffffff" stroke-width="1"/>
+    <text x="200" y="140" text-anchor="middle" fill="#ffffff" font-size="18" letter-spacing="2"
+          style="font-family: Georgia, serif;">by Javec</text>
+    <text x="200" y="215" text-anchor="middle" fill="#ffffff" font-size="48"
+          style="font-family:'Brush Script MT','Segoe Script',cursive;">Market Timing Lab</text>
+    <text x="200" y="265" text-anchor="middle" fill="#ffffff" font-size="14" letter-spacing="3"
+          style="font-family: Georgia, serif;">M · T · L</text>
+  </svg>
+</div>
 
-  <!-- Texto superior -->
-  <text x="200" y="140"
-        text-anchor="middle"
-        fill="#ffffff"
-        font-size="18"
-        letter-spacing="2"
-        style="font-family: 'Georgia', serif; opacity: 0.85;">
-    by Javec
-  </text>
-
-  <!-- Texto central principal -->
-  <text x="200" y="215"
-        text-anchor="middle"
-        fill="#ffffff"
-        font-size="48"
-        style="
-          font-family: 'Brush Script MT', 'Segoe Script', 'Lucida Handwriting', cursive;
-          font-style: italic;
-        ">
-    Market Timing Lab
-  </text>
-
-  <!-- Texto inferior -->
-  <text x="200" y="265"
-        text-anchor="middle"
-        fill="#ffffff"
-        font-size="14"
-        letter-spacing="3"
-        style="font-family: 'Georgia', serif;">
-    M · T · L
-  </text>
-</svg>
-        MTL
-      </text>
-      <text x="200" y="245" text-anchor="middle"
-            font-size="16"
-            fill="#fff"
-            letter-spacing="3">
-        MARKET TIMING LAB
-      </text>
-    </svg>
-  </div>
-
-  <!-- CONTENIDO -->
-  <div class="content">
-    <h1>MARKET TIMING LAB</h1>
-    <div class="subtitle">Entorno de pruebas privadas</div>
+<div class="modal" id="termsModal">
+  <div class="modal-content">
+    <h3>Términos de Uso — Market Timing Lab</h3>
 
     <p>
-      Market Timing Lab es un entorno experimental orientado a la evaluación del estado
-      del mercado y el timing operativo, diseñado como soporte para traders con criterio propio.
-    </p>
-
-    <p>
-      La herramienta no ejecuta operaciones, no ofrece señales ni realiza recomendaciones financieras.
-      Su objetivo es aportar contexto de mercado.
-    </p>
-
-    <p>
-      Proyecto creado y desarrollado por <strong>Jonathan Xavier Benitez Cruz</strong>.
-    </p>
-
-    <!-- ACEPTACIÓN -->
-    <div class="terms-accept">
-      <label>
-        <input type="checkbox" id="acceptTerms">
-        He leído y acepto los
-        <a href="#" onclick="openModal()">Términos y Condiciones</a>
-      </label>
-
-      <button id="enterBtn" disabled onclick="enterApp()">
-        Acceder al entorno
-      </button>
-    </div>
-
-    <footer>
-      Acceso limitado · Entorno privado en desarrollo activo
-    </footer>
-  </div>
-
-  <!-- MODAL TÉRMINOS -->
-  <div class="modal" id="termsModal">
-    <div class="modal-content">
-      <h3>Términos, Condiciones y Disclaimer</h3>
-
-      <p>
-        TÉRMINOS DE USO
+TÉRMINOS DE USO
 
 Market Timing Lab
 
 1. Introducción
-
 El presente documento establece los Términos de Uso que regulan el acceso y utilización de Market Timing Lab (en adelante, “el Proyecto”).
 
 El acceso al Proyecto implica la aceptación expresa y sin reservas de los presentes Términos de Uso. Si el usuario no está de acuerdo con alguno de los términos aquí establecidos, deberá abstenerse de utilizar el entorno.
 
-⸻
-
 2. Naturaleza del Proyecto
-
-Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo, concebido como una herramienta de apoyo al proceso de toma de decisiones en trading.
-
-El Proyecto se encuentra en fase de pruebas controladas y tiene un carácter técnico, no comercial y no público.
-
-⸻
+Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo.
 
 3. Alcance y finalidad
-
-El Proyecto está diseñado para:
-	•	Analizar condiciones generales del mercado a partir de datos objetivos.
-	•	Evaluar estados de mercado con fines exclusivamente contextuales.
-	•	Apoyar procesos de análisis, sin sustituir el criterio humano.
-
-Market Timing Lab no tiene como finalidad predecir el comportamiento del mercado ni garantizar resultados de ningún tipo.
-
-⸻
+El Proyecto está diseñado para analizar condiciones generales del mercado, evaluar estados de mercado con fines exclusivamente contextuales y apoyar procesos de análisis, sin sustituir el criterio humano.
 
 4. Lo que el Proyecto NO ofrece
-
-De manera expresa, el usuario reconoce y acepta que Market Timing Lab:
-	•	No ejecuta operaciones en mercados financieros.
-	•	No proporciona señales de trading.
-	•	No emite recomendaciones de compra o venta.
-	•	No constituye asesoramiento financiero, legal ni de inversión.
-	•	No garantiza rentabilidad, resultados ni desempeño futuro.
-
-Cualquier decisión tomada por el usuario a partir de la información proporcionada por el Proyecto es responsabilidad exclusiva del usuario.
-
-⸻
+No ejecuta operaciones, no proporciona señales, no emite recomendaciones, no constituye asesoramiento financiero ni garantiza resultados.
 
 5. Resultados y limitaciones
-
-Los resultados generados por el Proyecto:
-	•	Son informativos y contextuales.
-	•	Pueden variar según activo, marco temporal y condiciones de mercado.
-	•	Pueden contener limitaciones propias de un entorno experimental.
-	•	Están sujetos a cambios, ajustes o eliminación sin previo aviso.
-
-El usuario acepta que los resultados no deben ser utilizados como único criterio para la toma de decisiones operativas.
-
-⸻
+Los resultados son informativos, experimentales y pueden variar según activo y condiciones de mercado.
 
 6. Carácter privado y confidencialidad
-
-Market Timing Lab es un proyecto de acceso privado y restringido.
-
-Toda la información, resultados, metodologías, visualizaciones, interpretaciones y datos derivados del uso del Proyecto durante la fase de pruebas se consideran CONFIDENCIALES.
-
-El usuario se compromete expresamente a:
-	•	No divulgar, compartir, reproducir o filtrar información del Proyecto.
-	•	No transferir resultados, capturas, descripciones técnicas o metodológicas a terceros.
-	•	No compartir información con desarrolladores externos, plataformas, comunidades, foros o redes sociales.
-	•	No utilizar la información con fines comerciales, educativos o de desarrollo externo.
-
-Cualquier incumplimiento de esta obligación de confidencialidad podrá dar lugar a la revocación inmediata del acceso, sin perjuicio de otras acciones que pudieran corresponder.
-
-⸻
+Toda la información, resultados, metodologías y lógica del Proyecto son CONFIDENCIALES y no pueden ser divulgadas ni compartidas con terceros o desarrolladores externos.
 
 7. Uso responsable
-
-El usuario se compromete a:
-	•	Utilizar el Proyecto de forma responsable y consciente.
-	•	No presentar el Proyecto como un sistema de señales o asesoría.
-	•	No atribuir al Proyecto resultados financieros obtenidos por decisiones propias.
-
-⸻
+El usuario se compromete a utilizar el Proyecto de forma responsable.
 
 8. Acceso y modificaciones
-
-El acceso al Proyecto puede ser limitado, suspendido o revocado en cualquier momento, sin previo aviso.
-
-El Proyecto, su lógica interna, metodología y presentación pueden ser modificados total o parcialmente a criterio del responsable del mismo.
-
-⸻
+El acceso puede ser limitado, suspendido o revocado en cualquier momento.
 
 9. Exención de responsabilidad
-
-En la máxima medida permitida por la legislación aplicable, el responsable del Proyecto no será responsable por:
-	•	Pérdidas financieras directas o indirectas.
-	•	Daños derivados del uso o imposibilidad de uso del Proyecto.
-	•	Decisiones tomadas por el usuario basadas en la información proporcionada.
-
 El uso del Proyecto se realiza bajo el propio riesgo del usuario.
 
-⸻
-
 10. Propiedad intelectual
-
-Todo el contenido, estructura, lógica, metodología, código, diseño, resultados y documentación de Market Timing Lab constituye propiedad intelectual protegida.
-
-La propiedad intelectual del Proyecto corresponde a:
-
+La propiedad intelectual corresponde a:
 Jonathan Xavier Benitez Cruz
 Documento de identidad: 175018xxxx
 
-El acceso al Proyecto no otorga ningún derecho de propiedad, licencia ni autorización de uso externo, más allá del uso limitado dentro del entorno de pruebas autorizado.
-
-⸻
-
 11. Legislación aplicable
-
-Los presentes Términos de Uso se rigen por los principios generales del derecho aplicable, sin perjuicio de la jurisdicción que corresponda según el caso concreto.
-
-⸻
+Los presentes Términos se rigen por los principios generales del derecho aplicable.
 
 12. Aceptación
+El acceso y uso del Proyecto implica la aceptación total de los presentes Términos de Uso.
+    </p>
 
-El acceso y uso de Market Timing Lab implica que el usuario ha leído, comprendido y aceptado la totalidad de los presentes Términos de Uso.
-      </p>
-
-      <p>
-        El usuario asume plena responsabilidad sobre cualquier decisión tomada a partir
-        de la información presentada. Los resultados son meramente informativos y contextuales.
-      </p>
-
-      <p>
-        El acceso es privado. Toda la información, resultados, metodología y lógica
-        del sistema son confidenciales y no pueden ser divulgados, replicados ni compartidos
-        con desarrolladores externos.
-      </p>
-
-      <p>
-        La propiedad intelectual corresponde a
-        <strong>Jonathan Xavier Benitez Cruz</strong>,
-        documento de identidad 175018xxxx. Todos los derechos reservados.
-      </p>
-
-      <div class="close">
-        <button onclick="closeModal()">Cerrar</button>
-      </div>
+    <div class="close">
+      <button onclick="closeModal()">Cerrar</button>
     </div>
   </div>
+</div>
 
-  <!-- JS -->
-  <script>
-    const checkbox = document.getElementById("acceptTerms");
-    const button = document.getElementById("enterBtn");
+<script>
+  const checkbox = document.getElementById("acceptTerms");
+  const button = document.getElementById("enterBtn");
 
-    checkbox.addEventListener("change", () => {
-      button.disabled = !checkbox.checked;
-      button.classList.toggle("enabled", checkbox.checked);
-    });
+  checkbox.addEventListener("change", () => {
+    button.disabled = !checkbox.checked;
+    button.classList.toggle("enabled", checkbox.checked);
+  });
 
-    function openModal() {
-      document.getElementById("termsModal").style.display = "flex";
+  function openModal() {
+    document.getElementById("termsModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("termsModal").style.display = "none";
+  }
+
+  function enterApp() {
+    if (checkbox.checked) {
+      localStorage.setItem("mtl_terms_accepted", "true");
+      window.location.href = "/app.html";
     }
-
-    function closeModal() {
-      document.getElementById("termsModal").style.display = "none";
-    }
-
-    function enterApp() {
-      if (checkbox.checked) {
-        localStorage.setItem("mtl_terms_accepted", "true");
-        window.location.href = "/app.html";
-      }
-    }
-  </script>
+  }
+</script>
 
 </body>
 </html>
