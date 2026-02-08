@@ -6,112 +6,110 @@
 <title>Market Timing Lab</title>
 
 <style>
-:root{
-  --vino:#3a0f1c;
-  --vino-dark:#1b060c;
-  --negro:#0e0e0e;
-  --texto:#f3e9ec;
-  --texto-soft:#d9c6cc;
-  --plata:#cfd3d6;
-}
-
-*{box-sizing:border-box}
-
 html,body{
   margin:0;
-  width:100%;
+  padding:0;
   height:100%;
-  overflow:hidden;
+  background:#12070b;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:#e8dde0;
+  overflow:hidden;
 }
 
-body{
+/* ===== FONDO CONTROLADO (menos rojo) ===== */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
   background:
-    radial-gradient(circle at top,#4a1624 0%,var(--vino) 45%,var(--vino-dark) 100%);
-  color:var(--texto);
-  transition:background 1.5s ease;
+    radial-gradient(circle at top,#4b1625 0%,#2a0c15 45%,#12070b 100%);
+  z-index:-2;
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:-1;
 }
 
 /* ===== CONTENEDOR ===== */
-.wrapper{
-  position:relative;
-  z-index:2;
-  max-width:860px;
+.container{
+  max-width:420px;
+  margin:auto;
   height:100%;
-  margin:0 auto;
-  padding:48px 24px;
   display:flex;
   flex-direction:column;
   justify-content:center;
+  padding:24px;
   text-align:center;
-  transition:opacity 1s ease, transform 1s ease;
 }
 
-/* ===== TÍTULO ===== */
+/* ===== TITULO ===== */
 h1{
-  font-size:1.8rem;
   font-style:italic;
-  letter-spacing:.14em;
-  color:var(--negro);
+  font-weight:500;
+  letter-spacing:.18em;
+  color:#000;
+  text-shadow:0 0 2px rgba(255,255,255,.35);
   margin-bottom:8px;
 }
-
 .subtitle{
-  font-size:1rem;
-  color:var(--texto-soft);
-  margin-bottom:36px;
+  font-size:.95rem;
+  color:#d2c0c6;
+  margin-bottom:26px;
 }
 
 /* ===== TEXTO ===== */
-p{
-  font-size:.95rem;
-  line-height:1.65;
-  color:var(--texto-soft);
-  margin-bottom:18px;
-  white-space:pre-line;
+.description{
+  font-size:.9rem;
+  line-height:1.6;
+  color:#d8c9ce;
+  margin-bottom:22px;
 }
 
-/* ===== LOGIN ===== */
-.input{
-  width:240px;
-  margin:6px auto;
+/* ===== INPUTS ===== */
+input{
+  width:100%;
   padding:10px;
-  background:rgba(0,0,0,.25);
+  margin:8px 0;
+  background:rgba(0,0,0,.45);
   border:1px solid rgba(255,255,255,.25);
   border-radius:6px;
-  color:var(--texto);
-}
-
-/* ===== TÉRMINOS ===== */
-.terms{
-  margin-top:28px;
-  padding-top:22px;
-  border-top:1px solid rgba(255,255,255,.18);
-}
-
-.terms label{
-  cursor:pointer;
+  color:#fff;
   font-size:.9rem;
 }
 
+/* ===== T&C ===== */
+.terms{
+  margin:18px 0;
+  font-size:.85rem;
+  color:#d2c0c6;
+}
 .terms a{
-  color:#9fd3ff;
+  color:#9fcfff;
   text-decoration:none;
 }
-
-button{
-  margin-top:18px;
-  padding:10px 34px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.35);
-  background:rgba(255,255,255,.12);
-  color:var(--texto);
-  cursor:not-allowed;
+.terms input{
+  width:auto;
 }
 
+/* ===== BOTON ===== */
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;
+  color:#fff;
+  font-size:.9rem;
+  cursor:not-allowed;
+  opacity:.5;
+}
 button.enabled{
   cursor:pointer;
-  background:rgba(255,255,255,.22);
+  opacity:1;
 }
 
 /* ===== SELLO ===== */
@@ -120,94 +118,63 @@ button.enabled{
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  z-index:1;
-  opacity:.10;
+  width:260px;
+  opacity:.18;
   pointer-events:none;
 }
-
-.seal svg{
-  width:300px;
-  height:300px;
+.seal circle{
+  fill:none;
+  stroke:#fff;
+}
+.seal .ring{
+  animation:spin 40s linear infinite;
+  transform-origin:50% 50%;
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 
-#rings{
-  transform-origin:50% 50%;
+/* ===== MODAL ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-content{
+  background:#1b0a11;
+  max-width:760px;
+  max-height:85vh;
+  overflow:auto;
+  padding:28px;
+  border-radius:10px;
+  text-align:left;
+  color:#e0d2d6;
+}
+.modal-content h3{margin-top:0}
+.modal-content button{
+  margin-top:16px;
+  cursor:pointer;
+  opacity:1;
 }
 
 /* ===== LOADER ===== */
 .loader{
   position:fixed;
   inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  z-index:4;
-  pointer-events:none;
-  transition:opacity 1s ease;
-}
-
-.loader-label{
-  margin-top:18px;
-  font-size:.75rem;
-  letter-spacing:.22em;
-  color:var(--plata);
-}
-
-.loader-progress{
-  margin-top:6px;
-  font-size:1.1rem;
-  color:var(--plata);
-}
-
-/* ===== MODAL ===== */
-.modal{
+  background:#12070b;
   display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:10;
-  justify-content:center;
+  flex-direction:column;
   align-items:center;
-  padding:20px;
+  justify-content:center;
 }
-
-.modal-content{
-  background:#2a0c15;
-  max-width:820px;
-  max-height:85vh;
-  overflow-y:auto;
-  padding:28px;
-  border-radius:10px;
-  color:var(--texto-soft);
-}
-
-.modal-content h3{
-  margin-top:0;
-  color:var(--texto);
-}
-
-/* ===== TRANSICIÓN ===== */
-body.loading .wrapper{
-  opacity:0;
-  transform:scale(.96);
-}
-
-body.loading .seal{
-  opacity:.85;
-}
-
-body.loading #rings{
-  animation:spin 20s linear infinite reverse;
-}
-
-body.loading .loader{
-  opacity:1;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
+.loader .percent{
+  margin-top:16px;
+  color:#cfd0d2;
+  font-size:1.1rem;
 }
 </style>
 </head>
@@ -217,157 +184,98 @@ body.loading .loader{
 <!-- SELLO -->
 <div class="seal">
 <svg viewBox="0 0 400 400">
-  <g id="rings">
-    <circle cx="200" cy="200" r="180" fill="none" stroke="#fff" stroke-width="2"/>
-    <circle cx="200" cy="200" r="150" fill="none" stroke="#fff" stroke-width="1"/>
+  <g class="ring">
+    <circle cx="200" cy="200" r="170" stroke-width="2"/>
   </g>
-  <text x="200" y="215" text-anchor="middle"
-    font-size="44" fill="#fff"
-    style="font-family:'Brush Script MT',cursive;font-style:italic">
+  <text x="200" y="210" text-anchor="middle"
+    fill="#fff" font-size="38"
+    style="font-family:'Brush Script MT',cursive">
     Market Timing Lab
   </text>
 </svg>
 </div>
 
 <!-- CONTENIDO -->
-<div class="wrapper">
+<div class="container">
   <h1>MARKET TIMING LAB</h1>
   <div class="subtitle">Entorno privado de lectura contextual</div>
 
-  <p>
-Market Timing Lab es un entorno experimental orientado a la evaluación del estado del mercado y del timing operativo.
+  <div class="description">
+    Herramienta experimental orientada a la evaluación del estado del mercado y del timing operativo.
+    <br><br>
+    No ejecuta operaciones, no emite señales ni recomendaciones financieras.
+  </div>
 
-La herramienta no ejecuta operaciones, no emite señales y no realiza recomendaciones financieras.
-  </p>
-
-  <input class="input" id="user" placeholder="Usuario">
-  <input class="input" id="pass" type="password" placeholder="Contraseña">
+  <input id="user" placeholder="Usuario">
+  <input id="pass" type="password" placeholder="Contraseña">
 
   <div class="terms">
     <label>
       <input type="checkbox" id="accept">
-      He leído y acepto los <a href="#" onclick="openTerms()">Términos y Condiciones</a>
-    </label><br>
-    <button id="enter" disabled onclick="enter()">Acceder</button>
+      He leído y acepto los <a href="#" onclick="openModal()">Términos y Condiciones</a>
+    </label>
+  </div>
+
+  <button id="enter" onclick="start()" disabled>Acceder al entorno</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Términos de Uso — Market Timing Lab</h3>
+    <p>
+Proyecto privado y experimental orientado exclusivamente a lectura contextual del mercado.
+No constituye asesoramiento financiero ni garantiza resultados.
+Todo el contenido es confidencial y protegido.
+    </p>
+    <button onclick="closeModal()">Cerrar</button>
   </div>
 </div>
 
 <!-- LOADER -->
-<div class="loader">
-  <div class="loader-label" id="phase">INITIALIZING SYSTEM</div>
-  <div class="loader-progress" id="percent">0%</div>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="termsModal">
-  <div class="modal-content">
-    <h3>Términos de Uso — Market Timing Lab</h3>
-    <b>1. Introducción</b><br>
-El presente documento regula el acceso y uso de Market Timing Lab (en adelante, “el Proyecto”). El acceso implica aceptación expresa y sin reservas.
-</p>
-
-<p>
-<b>2. Naturaleza del Proyecto</b><br>
-Market Timing Lab es un proyecto privado y experimental orientado a la evaluación del estado del mercado y del timing operativo. Se encuentra en fase de pruebas controladas.
-</p>
-
-<p>
-<b>3. Alcance y finalidad</b><br>
-Herramienta de lectura contextual destinada a apoyar el análisis del mercado. No sustituye el criterio humano ni garantiza resultados.
-</p>
-
-<p>
-<b>4. Lo que el Proyecto NO ofrece</b><br>
-No ejecuta operaciones, no proporciona señales, no emite recomendaciones financieras, no constituye asesoramiento de inversión ni garantiza rentabilidad.
-</p>
-
-<p>
-<b>5. Resultados y limitaciones</b><br>
-Los resultados son informativos, pueden variar y están sujetos a ajustes, cambios o eliminación sin previo aviso.
-</p>
-
-<p>
-<b>6. Carácter privado y confidencialidad</b><br>
-Toda la información, resultados, metodologías y datos del Proyecto son CONFIDENCIALES y no pueden ser divulgados ni compartidos con terceros o desarrolladores externos.
-</p>
-
-<p>
-<b>7. Uso responsable</b><br>
-El usuario se compromete a utilizar el Proyecto de forma responsable y consciente, sin atribuirle resultados financieros propios.
-</p>
-
-<p>
-<b>8. Acceso y modificaciones</b><br>
-El acceso puede ser suspendido o revocado en cualquier momento. La estructura del Proyecto puede ser modificada sin previo aviso.
-</p>
-
-<p>
-<b>9. Exención de responsabilidad</b><br>
-El responsable del Proyecto no será responsable por pérdidas financieras ni decisiones tomadas por el usuario.
-</p>
-
-<p>
-<b>10. Propiedad intelectual</b><br>
-Todo el contenido, lógica, metodología, código y diseño del Proyecto es propiedad intelectual de:<br><br>
-<b>Jonathan Xavier Benitez Cruz</b><br>
-Documento de identidad: 175018xxxx
-</p>
-
-<p>
-<b>11. Aceptación</b><br>
-El acceso y uso del Proyecto implica aceptación total de estos Términos de Uso.
-</p>
-
-
-    </p>
-    <button onclick="closeTerms()">Cerrar</button>
+<div class="loader" id="loader">
+  <div class="seal">
+    <svg viewBox="0 0 400 400">
+      <g class="ring">
+        <circle cx="200" cy="200" r="170" stroke-width="2"/>
+      </g>
+      <text x="200" y="210" text-anchor="middle"
+        fill="#000" stroke="#fff" stroke-width="1"
+        font-size="38"
+        style="font-family:'Brush Script MT',cursive">
+        Market Timing Lab
+      </text>
+    </svg>
   </div>
+  <div class="percent" id="percent">0%</div>
 </div>
 
 <script>
 const user=document.getElementById("user");
 const pass=document.getElementById("pass");
-const accept=document.getElementById("accept");
-const enterBtn=document.getElementById("enter");
+const chk=document.getElementById("accept");
+const btn=document.getElementById("enter");
+
+[user,pass,chk].forEach(e=>e.addEventListener("input",validate));
+chk.addEventListener("change",validate);
 
 function validate(){
-  const ok=user.value && pass.value && accept.checked;
-  enterBtn.disabled=!ok;
-  enterBtn.classList.toggle("enabled",ok);
-}
-[user,pass,accept].forEach(e=>e.addEventListener("input",validate));
-
-function openTerms(){
-  document.getElementById("termsModal").style.display="flex";
-}
-function closeTerms(){
-  document.getElementById("termsModal").style.display="none";
+  const ok=user.value && pass.value && chk.checked;
+  btn.disabled=!ok;
+  btn.classList.toggle("enabled",ok);
 }
 
-function enter(){
-  document.body.classList.add("loading");
+function openModal(){document.getElementById("modal").style.display="flex";}
+function closeModal(){document.getElementById("modal").style.display="none";}
+
+function start(){
+  document.getElementById("loader").style.display="flex";
   let p=0;
-  const percent=document.getElementById("percent");
-  const phase=document.getElementById("phase");
-  const phases=[
-    "INITIALIZING SYSTEM",
-    "LOADING CONTEXT",
-    "ASSESSING MARKET",
-    "FINALIZING SESSION"
-  ];
-  let i=0;
-  const int=setInterval(()=>{
-    p+=1;
-    percent.textContent=p+"%";
-    if(p>=(i+1)*25 && i<phases.length-1){
-      i++;
-      phase.textContent=phases[i];
-    }
-    if(p>=100){
-      clearInterval(int);
-      setTimeout(()=>location.href="/app",800);
-    }
-  },200);
+  const i=setInterval(()=>{
+    p++;
+    document.getElementById("percent").innerText=p+"%";
+    if(p>=100) clearInterval(i);
+  },200); // ~20 segundos
 }
 </script>
 
