@@ -1,199 +1,234 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>KAUTEKS — Interface Preview</title>
-  <style>
-    /* ===== RESET ===== */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8" />
+<title>KAUTEKS — Interface Prototype</title>
 
-    body {
-      background: #0d0f12;
-      color: #c8ccd2;
-      font-family: Inter, system-ui, sans-serif;
-      letter-spacing: 0.02em;
-    }
+<style>
+:root {
+  --bg: #0d0f12;
+  --panel: #12161c;
+  --border: #1f2530;
+  --text: #d1d5db;
+  --muted: #8b949e;
 
-    /* ===== LAYOUT ===== */
-    .app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  --state-neutral: #3b4a5e;
+  --state-active: #5b7aa3;
+  --state-strong: #7fa0c2;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 16px 24px;
-      border-bottom: 1px solid #1a1e23;
-      opacity: 0.75;
-    }
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
 
-    .brand {
-      font-weight: 600;
-      letter-spacing: 0.25em;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
 
-    main {
-      flex: 1;
-      padding: 28px 24px;
-    }
+/* ===== HEADER ===== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
 
-    /* ===== INDICATOR CAPSULES ===== */
-    .indicators {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.25em;
+  font-weight: 600;
+}
 
-    .capsule {
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: #13161a;
-      border: 1px solid #222734;
-      font-size: 13px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: background 0.4s ease, border-color 0.4s ease;
-    }
+.logo {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--state-active);
+  transform: rotate(45deg);
+}
 
-    .capsule:hover {
-      background: #171b22;
-      border-color: #2f3a52;
-    }
+.context {
+  font-size: 13px;
+  color: var(--muted);
+}
 
-    .capsule span {
-      font-size: 11px;
-      opacity: 0.55;
-    }
+.user {
+  font-size: 13px;
+  opacity: 0.7;
+}
 
-    /* ===== CHART AREA ===== */
-    .chart-container {
-      position: relative;
-      height: 360px;
-      background: linear-gradient(
-        180deg,
-        #0f1217 0%,
-        #0b0d11 100%
-      );
-      border: 1px solid #1a1e23;
-    }
+/* ===== SYSTEM CAPSULE ===== */
+.system {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
 
-    /* Placeholder chart grid */
-    .chart-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
+.system-capsule {
+  display: inline-block;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--state-neutral);
+  background: rgba(59,74,94,0.15);
+  cursor: pointer;
+  transition: all 0.45s ease;
+}
 
-    /* ===== RELIABILITY INDICATOR (INSIDE CHART) ===== */
-    .reliability {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      padding: 10px 14px;
-      font-size: 12px;
-      background: rgba(15,18,23,0.85);
-      border: 1px solid #2a3142;
-      backdrop-filter: blur(6px);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 160px;
-    }
+.system-capsule strong {
+  display: block;
+  font-size: 14px;
+}
 
-    .reliability-label {
-      opacity: 0.6;
-      font-size: 11px;
-    }
+.system-capsule span {
+  font-size: 12px;
+  color: var(--muted);
+}
 
-    .reliability-bar {
-      height: 4px;
-      width: 100%;
-      background: #1e2430;
-      position: relative;
-    }
+/* STATES */
+.system-capsule.state-0 {
+  border-color: var(--state-neutral);
+}
 
-    .reliability-bar::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 68%;
-      background: linear-gradient(
-        90deg,
-        #4f6b8a,
-        #6f89a3
-      );
-      transition: width 0.6s ease;
-    }
+.system-capsule.state-1 {
+  border-color: var(--state-active);
+  background: rgba(91,122,163,0.18);
+}
 
-    footer {
-      padding: 12px 24px;
-      font-size: 12px;
-      opacity: 0.4;
-      border-top: 1px solid #1a1e23;
-    }
-  </style>
+.system-capsule.state-2 {
+  border-color: var(--state-strong);
+  background: rgba(127,160,194,0.22);
+}
+
+/* ===== MAIN ===== */
+.main {
+  display: flex;
+  height: calc(100vh - 150px);
+}
+
+/* SIDE PANEL */
+.sidebar {
+  width: 220px;
+  border-right: 1px solid var(--border);
+  padding: 18px;
+  color: var(--muted);
+}
+
+.sidebar div {
+  margin-bottom: 12px;
+}
+
+/* CHART */
+.chart {
+  flex: 1;
+  position: relative;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+}
+
+/* RELIABILITY */
+.reliability {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 180px;
+  padding: 10px 12px;
+  background: rgba(18,22,28,0.85);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+
+.reliability span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.bar {
+  height: 4px;
+  background: #1f2530;
+  margin-top: 6px;
+  position: relative;
+}
+
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 65%;
+  background: linear-gradient(
+    90deg,
+    var(--state-neutral),
+    var(--state-active)
+  );
+  transition: width 0.4s ease;
+}
+</style>
 </head>
+
 <body>
-  <div class="app">
 
-    <header>
-      <div class="brand">KAUTEKS</div>
-      <div>System view</div>
-    </header>
-
-    <main>
-      <!-- INDICATORS -->
-      <section class="indicators">
-        <div class="capsule">
-          Volatility
-          <span>Within tolerance</span>
-        </div>
-        <div class="capsule">
-          Trend
-          <span>Partially aligned</span>
-        </div>
-        <div class="capsule">
-          Momentum
-          <span>Below threshold</span>
-        </div>
-        <div class="capsule">
-          Session
-          <span>Neutral</span>
-        </div>
-        <div class="capsule">
-          Liquidity
-          <span>Acceptable</span>
-        </div>
-      </section>
-
-      <!-- CHART -->
-      <section class="chart-container">
-        <div class="chart-grid"></div>
-
-        <!-- Reliability inside chart -->
-        <div class="reliability">
-          <div class="reliability-label">Signal reliability</div>
-          <div class="reliability-bar"></div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      No execution · Visual evaluation only
-    </footer>
-
+<header>
+  <div class="brand">
+    <div class="logo"></div>
+    KAUTEKS
   </div>
+  <div class="context">BTC / USDT · PERP</div>
+  <div class="user">jonathan ⚙︎</div>
+</header>
+
+<section class="system">
+  <div id="capsule" class="system-capsule state-0">
+    <strong>SYSTEM · OBSERVE</strong>
+    <span>Volatility: Medium · Risk Window: Open</span>
+  </div>
+</section>
+
+<div class="main">
+  <aside class="sidebar">
+    <div>Configuration</div>
+    <div>Presets</div>
+    <div>Profiles</div>
+    <div>Theme</div>
+  </aside>
+
+  <section class="chart">
+    <div class="reliability">
+      <span>Signal reliability</span>
+      <div class="bar"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const capsule = document.getElementById("capsule");
+let state = 0;
+
+const states = [
+  { title: "SYSTEM · OBSERVE", sub: "Volatility: Medium · Risk Window: Open" },
+  { title: "SYSTEM · ALIGN", sub: "Volatility: Controlled · Risk Window: Narrow" },
+  { title: "SYSTEM · ENGAGE", sub: "Volatility: Favorable · Risk Window: Active" }
+];
+
+capsule.addEventListener("click", () => {
+  state = (state + 1) % states.length;
+  capsule.className = "system-capsule state-" + state;
+  capsule.querySelector("strong").textContent = states[state].title;
+  capsule.querySelector("span").textContent = states[state].sub;
+});
+</script>
+
 </body>
 </html>
