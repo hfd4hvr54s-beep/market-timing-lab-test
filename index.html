@@ -12,9 +12,9 @@
   --text: #d1d5db;
   --muted: #8b949e;
 
-  --state-neutral: #3b4a5e;
-  --state-active: #5b7aa3;
-  --state-strong: #7fa0c2;
+  --state-0: #3b4a5e;
+  --state-1: #5b7aa3;
+  --state-2: #7fa0c2;
 }
 
 * {
@@ -48,18 +48,21 @@ header {
 .logo {
   width: 14px;
   height: 14px;
-  border: 1px solid var(--state-active);
+  border: 1px solid var(--state-1);
   transform: rotate(45deg);
-}
-
-.context {
-  font-size: 13px;
-  color: var(--muted);
 }
 
 .user {
   font-size: 13px;
   opacity: 0.7;
+}
+
+/* ===== PAIR ===== */
+.pair {
+  text-align: right;
+  padding: 6px 20px 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 /* ===== SYSTEM CAPSULE ===== */
@@ -72,8 +75,8 @@ header {
   display: inline-block;
   padding: 14px 22px;
   border-radius: 999px;
-  border: 1px solid var(--state-neutral);
-  background: rgba(59,74,94,0.15);
+  border: 1px solid var(--state-0);
+  background: rgba(59,74,94,0.25);
   cursor: pointer;
   transition: all 0.45s ease;
 }
@@ -90,52 +93,67 @@ header {
 
 /* STATES */
 .system-capsule.state-0 {
-  border-color: var(--state-neutral);
+  border-color: var(--state-0);
+  background: rgba(59,74,94,0.25);
 }
 
 .system-capsule.state-1 {
-  border-color: var(--state-active);
-  background: rgba(91,122,163,0.18);
+  border-color: var(--state-1);
+  background: rgba(91,122,163,0.35);
 }
 
 .system-capsule.state-2 {
-  border-color: var(--state-strong);
-  background: rgba(127,160,194,0.22);
+  border-color: var(--state-2);
+  background: rgba(127,160,194,0.45);
 }
 
 /* ===== MAIN ===== */
 .main {
   display: flex;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 170px);
+  position: relative;
 }
 
-/* SIDE PANEL */
+/* SIDEBAR TOGGLE */
+.sidebar-toggle {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+/* SIDEBAR */
 .sidebar {
   width: 220px;
+  background: var(--panel);
   border-right: 1px solid var(--border);
   padding: 18px;
   color: var(--muted);
+  position: absolute;
+  left: -220px;
+  top: 0;
+  bottom: 0;
+  transition: left 0.35s ease;
+}
+
+.sidebar.open {
+  left: 0;
 }
 
 .sidebar div {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 /* CHART */
 .chart {
   flex: 1;
+  margin-left: 0;
   position: relative;
   background:
-    linear-gradient(
-      0deg,
-      rgba(255,255,255,0.03) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,0.03) 1px,
-      transparent 1px
-    );
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -168,12 +186,7 @@ header {
   position: absolute;
   inset: 0;
   width: 65%;
-  background: linear-gradient(
-    90deg,
-    var(--state-neutral),
-    var(--state-active)
-  );
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, var(--state-0), var(--state-1));
 }
 </style>
 </head>
@@ -185,9 +198,10 @@ header {
     <div class="logo"></div>
     KAUTEKS
   </div>
-  <div class="context">BTC / USDT · PERP</div>
   <div class="user">jonathan ⚙︎</div>
 </header>
+
+<div class="pair">BTC / USDT · PERP</div>
 
 <section class="system">
   <div id="capsule" class="system-capsule state-0">
@@ -197,7 +211,9 @@ header {
 </section>
 
 <div class="main">
-  <aside class="sidebar">
+  <div class="sidebar-toggle" id="toggle">☰</div>
+
+  <aside class="sidebar" id="sidebar">
     <div>Configuration</div>
     <div>Presets</div>
     <div>Profiles</div>
@@ -213,6 +229,7 @@ header {
 </div>
 
 <script>
+/* Capsule states */
 const capsule = document.getElementById("capsule");
 let state = 0;
 
@@ -227,6 +244,14 @@ capsule.addEventListener("click", () => {
   capsule.className = "system-capsule state-" + state;
   capsule.querySelector("strong").textContent = states[state].title;
   capsule.querySelector("span").textContent = states[state].sub;
+});
+
+/* Sidebar toggle */
+const toggle = document.getElementById("toggle");
+const sidebar = document.getElementById("sidebar");
+
+toggle.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
 });
 </script>
 
