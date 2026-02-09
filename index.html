@@ -66,31 +66,43 @@ header {
 }
 
 /* ===== SYSTEM CAPSULE ===== */
-.system {
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
 .system-capsule {
   display: inline-block;
-  padding: 14px 22px;
+  padding: 18px 36px;              /* MÁS ANCHO */
   border-radius: 999px;
   border: 1px solid var(--state-0);
-  background: rgba(59,74,94,0.25);
+  background: rgba(59,74,94,0.32); /* MÁS CUERPO */
   cursor: pointer;
   transition: all 0.45s ease;
+  min-width: 420px;                /* RESPIRA */
 }
 
 .system-capsule strong {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
+  letter-spacing: 0.06em;
 }
 
 .system-capsule span {
   font-size: 12px;
-  color: var(--muted);
+  color: #a8b0bd;
 }
 
+/* STATES — MÁS CONTRASTE, NO AGRESIVO */
+.system-capsule.state-0 {
+  border-color: #465a73;
+  background: rgba(70,90,115,0.35);
+}
+
+.system-capsule.state-1 {
+  border-color: #6c8fb8;
+  background: rgba(108,143,184,0.38);
+}
+
+.system-capsule.state-2 {
+  border-color: #8fb3d8;
+  background: rgba(143,179,216,0.42);
+}
 /* STATES */
 .system-capsule.state-0 {
   border-color: var(--state-0);
